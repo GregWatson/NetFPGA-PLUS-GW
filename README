@@ -1,3 +1,8 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# THIS IS A FORK OF https://github.com/NetFPGA/NetFPGA-PLUS
+# Do not use this fork unless you are aware of the differences
+# between this and the base repo.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # Copyright (c) 2021 Yuta Tokusashi
 # All rights reserved.
@@ -29,7 +34,7 @@ For documentation on its content and use, as well as general
 information on the NetFPGA-SUME platform, please visit the
 documentation wiki:
 
-https://github.com/NetFPGA/NetFPGA-PLUS/wiki
+/wiki
 
 The wiki additionally contains a useful "Getting Started Guide"
 for new users, which can be found here:

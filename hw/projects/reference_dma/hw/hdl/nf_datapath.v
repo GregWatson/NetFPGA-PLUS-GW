@@ -23,7 +23,7 @@
 //
 //  Description:
 //        NetFPGA user data path wrapper. Used to explore host DMA performance.
-//        Has Tx and Rx interfaces to DMS.
+//        Has Tx and Rx interfaces to DMA. (Currently ONLY host to card is implemented)
 //        No connectivity to the CMACs.
 //
 //        s_axis_0, s_axis_1, m_axis0, and m_axis1 are no connect (CMACs)

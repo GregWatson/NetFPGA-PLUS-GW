@@ -69,7 +69,7 @@ CFLAGS += -DDPDK=1
 # CFLAGS += -DDUMP_MEMPOOL_USAGE_STATS
 CFLAGS += -DPERF_BENCHMARK
 # Adding NO_FILE_READ means that file is not actually read. Just use whatever data is in mbufs.
-CFLAGS += -DNO_FILE_READ
+# CFLAGS += -DNO_FILE_READ
 
 # Add flag to allow experimental API as qdma_testapp uses rte_ethdev_set_ptype API
 CFLAGS += -DALLOW_EXPERIMENTAL_API

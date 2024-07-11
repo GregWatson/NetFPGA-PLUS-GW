@@ -576,7 +576,7 @@ int do_xmit(int port_id, int fd, int queueid, int ld_size, int tot_num_desc,
 					"Transmitted = %d.\n"
 					"Calling rte_eth_tx_burst again (%d retries remaining)\n",
 					num_pkts, nb_tx, max_tx_retry);
-			rte_delay_us(1);
+			rte_delay_us(1000);
 			num_pkts -= nb_tx;
 			nb_tx = rte_eth_tx_burst(port_id, queueid, &mb[tmp],
 					num_pkts);

@@ -42,7 +42,7 @@
 #endif
 #define MAX_NUM_QUEUES 2048
 #define DEFAULT_NUM_QUEUES 64
-#define RX_TX_MAX_RETRY			1500
+#define RX_TX_MAX_RETRY			20
 #define DEFAULT_RX_WRITEBACK_THRESH	(64)
 
 #define MP_CACHE_SZ     512

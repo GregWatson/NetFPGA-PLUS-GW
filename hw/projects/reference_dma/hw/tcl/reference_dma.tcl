@@ -52,7 +52,7 @@ set opl_cam_depth_bits    [expr int(log(${opl_bcam_size})/log(2))]
 # But if you really want to see all messages
 # then set suppress_unwanted_warnings to 0.
 #####################################
-set suppress_unwanted_warnings 1
+set suppress_unwanted_warnings 0
 if {$suppress_unwanted_warnings == 1} {
 	set_msg_config -id "Synth 8-11241" -limit 1 
 	set_msg_config -id "Synth 8-6014" -limit 1
@@ -77,13 +77,13 @@ if {[string match $board_name "au280"]} {
 	set_property verilog_define { {BOARD_AU280} {au280} {__synthesis__} } [current_fileset]
 	set board_param "AU280"
 } elseif {[string match $board_name "au250"]} {
-	set_property verilog_define { {BOARD_AU250} {__synthesis__} } [current_fileset]
+	set_property verilog_define { {BOARD_AU250} {__au250__} {__synthesis__} } [current_fileset]
 	set board_param "AU250"
 } elseif {[string match $board_name "au200"]} {
-	set_property verilog_define { {BOARD_AU200} {__synthesis__} } [current_fileset]
+	set_property verilog_define { {BOARD_AU200} {__au200__} {__synthesis__} } [current_fileset]
 	set board_param "AU200"
 } elseif {[string match $board_name "vcu1525"]} {
-	set_property verilog_define { {BOARD_VCU1525} {__synthesis__} } [current_fileset]
+	set_property verilog_define { {BOARD_VCU1525}  {__au200__}  {__synthesis__} } [current_fileset]
 	set board_param "VCU1525"
 }
 set_property generic "C_NF_DATA_WIDTH=${datapath_width_bit} BOARD=\"${board_param}\"" [current_fileset]
@@ -121,13 +121,7 @@ set_property constrset constraints [get_runs impl_1]
 # Project 
 #####################################
 update_ip_catalog
-# nf_data_sink
-create_ip -name nf_data_sink -vendor NetFPGA -library NetFPGA -module_name nf_data_sink_ip
-set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_data_sink_ip]
-set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_data_sink_ip]
-set_property generate_synth_checkpoint false [get_files nf_data_sink_ip.xci]
-reset_target all [get_ips nf_data_sink_ip]
-generate_target all [get_ips nf_data_sink_ip]
+
 # OPL
 create_ip -name switch_output_port_lookup -vendor NetFPGA -library NetFPGA -module_name switch_output_port_lookup_ip
 set_property CONFIG.C_CAM_LUT_DEPTH_BITS ${opl_cam_depth_bits} [get_ips switch_output_port_lookup_ip]
@@ -174,6 +168,14 @@ set_property CONFIG.C_DEFAULT_VALUE_ENABLE 0 [get_ips nf_mac_attachment_dma_ip]
 set_property generate_synth_checkpoint false [get_files nf_mac_attachment_dma_ip.xci]
 reset_target all [get_ips nf_mac_attachment_dma_ip]
 generate_target all [get_ips nf_mac_attachment_dma_ip]
+
+# nf_data_sink
+create_ip -name nf_data_sink -vendor NetFPGA -library NetFPGA -module_name nf_data_sink_ip
+set_property CONFIG.C_M_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_data_sink_ip]
+set_property CONFIG.C_S_AXIS_DATA_WIDTH ${datapath_width_bit} [get_ips nf_data_sink_ip]
+set_property generate_synth_checkpoint false [get_files nf_data_sink_ip.xci]
+reset_target all [get_ips nf_data_sink_ip]
+generate_target all [get_ips nf_data_sink_ip]
 
 create_ip -name axi_crossbar -vendor xilinx.com -library ip -module_name axi_crossbar_0
 set_property -dict [list \
@@ -255,6 +257,87 @@ CONFIG.M02_A00_BASE_ADDR {0x0000000000020000}] [get_ips axi_crossbar_0]
 set_property generate_synth_checkpoint false [get_files axi_crossbar_0.xci]
 reset_target all [get_ips axi_crossbar_0]
 generate_target all [get_ips axi_crossbar_0]
+
+create_ip -name axi_crossbar -vendor xilinx.com -library ip -module_name axi_crossbar_1
+set_property -dict [list \
+CONFIG.NUM_MI {3}                            \
+CONFIG.PROTOCOL {AXI4LITE}                   \
+CONFIG.CONNECTIVITY_MODE {SASD}              \
+CONFIG.R_REGISTER {1}                        \
+CONFIG.S00_WRITE_ACCEPTANCE {1}              \
+CONFIG.S01_WRITE_ACCEPTANCE {1}              \
+CONFIG.S02_WRITE_ACCEPTANCE {1}              \
+CONFIG.S03_WRITE_ACCEPTANCE {1}              \
+CONFIG.S04_WRITE_ACCEPTANCE {1}              \
+CONFIG.S05_WRITE_ACCEPTANCE {1}              \
+CONFIG.S06_WRITE_ACCEPTANCE {1}              \
+CONFIG.S07_WRITE_ACCEPTANCE {1}              \
+CONFIG.S08_WRITE_ACCEPTANCE {1}              \
+CONFIG.S09_WRITE_ACCEPTANCE {1}              \
+CONFIG.S10_WRITE_ACCEPTANCE {1}              \
+CONFIG.S11_WRITE_ACCEPTANCE {1}              \
+CONFIG.S12_WRITE_ACCEPTANCE {1}              \
+CONFIG.S13_WRITE_ACCEPTANCE {1}              \
+CONFIG.S14_WRITE_ACCEPTANCE {1}              \
+CONFIG.S15_WRITE_ACCEPTANCE {1}              \
+CONFIG.S00_READ_ACCEPTANCE {1}               \
+CONFIG.S01_READ_ACCEPTANCE {1}               \
+CONFIG.S02_READ_ACCEPTANCE {1}               \
+CONFIG.S03_READ_ACCEPTANCE {1}               \
+CONFIG.S04_READ_ACCEPTANCE {1}               \
+CONFIG.S05_READ_ACCEPTANCE {1}               \
+CONFIG.S06_READ_ACCEPTANCE {1}               \
+CONFIG.S07_READ_ACCEPTANCE {1}               \
+CONFIG.S08_READ_ACCEPTANCE {1}               \
+CONFIG.S09_READ_ACCEPTANCE {1}               \
+CONFIG.S10_READ_ACCEPTANCE {1}               \
+CONFIG.S11_READ_ACCEPTANCE {1}               \
+CONFIG.S12_READ_ACCEPTANCE {1}               \
+CONFIG.S13_READ_ACCEPTANCE {1}               \
+CONFIG.S14_READ_ACCEPTANCE {1}               \
+CONFIG.S15_READ_ACCEPTANCE {1}               \
+CONFIG.M00_WRITE_ISSUING {1}                 \
+CONFIG.M01_WRITE_ISSUING {1}                 \
+CONFIG.M02_WRITE_ISSUING {1}                 \
+CONFIG.M03_WRITE_ISSUING {1}                 \
+CONFIG.M04_WRITE_ISSUING {1}                 \
+CONFIG.M05_WRITE_ISSUING {1}                 \
+CONFIG.M06_WRITE_ISSUING {1}                 \
+CONFIG.M07_WRITE_ISSUING {1}                 \
+CONFIG.M08_WRITE_ISSUING {1}                 \
+CONFIG.M09_WRITE_ISSUING {1}                 \
+CONFIG.M10_WRITE_ISSUING {1}                 \
+CONFIG.M11_WRITE_ISSUING {1}                 \
+CONFIG.M12_WRITE_ISSUING {1}                 \
+CONFIG.M13_WRITE_ISSUING {1}                 \
+CONFIG.M14_WRITE_ISSUING {1}                 \
+CONFIG.M15_WRITE_ISSUING {1}                 \
+CONFIG.M00_READ_ISSUING {1}                  \
+CONFIG.M01_READ_ISSUING {1}                  \
+CONFIG.M02_READ_ISSUING {1}                  \
+CONFIG.M03_READ_ISSUING {1}                  \
+CONFIG.M04_READ_ISSUING {1}                  \
+CONFIG.M05_READ_ISSUING {1}                  \
+CONFIG.M06_READ_ISSUING {1}                  \
+CONFIG.M07_READ_ISSUING {1}                  \
+CONFIG.M08_READ_ISSUING {1}                  \
+CONFIG.M09_READ_ISSUING {1}                  \
+CONFIG.M10_READ_ISSUING {1}                  \
+CONFIG.M11_READ_ISSUING {1}                  \
+CONFIG.M12_READ_ISSUING {1}                  \
+CONFIG.M13_READ_ISSUING {1}                  \
+CONFIG.M14_READ_ISSUING {1}                  \
+CONFIG.M15_READ_ISSUING {1}                  \
+CONFIG.S00_SINGLE_THREAD {1}                 \
+CONFIG.M00_A00_ADDR_WIDTH {16}               \
+CONFIG.M01_A00_ADDR_WIDTH {16}               \
+CONFIG.M02_A00_ADDR_WIDTH {16}               \
+CONFIG.M00_A00_BASE_ADDR {0x0000000000000000}\
+CONFIG.M01_A00_BASE_ADDR {0x0000000000010000}\
+CONFIG.M02_A00_BASE_ADDR {0x0000000000020000}] [get_ips axi_crossbar_1]
+set_property generate_synth_checkpoint false [get_files axi_crossbar_1.xci]
+reset_target all [get_ips axi_crossbar_1]
+generate_target all [get_ips axi_crossbar_1]
 
 create_ip -name axi_clock_converter -vendor xilinx.com -library ip -module_name axi_clock_converter_0
 set_property -dict {
@@ -418,7 +501,7 @@ read_verilog -sv "${public_repo_dir}/common/hdl/nf_attachment.sv"
 read_verilog     "${public_repo_dir}/common/hdl/top.v"
 
 #Setting Synthesis options
-create_run -flow {Vivado Synthesis 2020} synth
+create_run -flow {Vivado Synthesis 2020} -verbose synth
 set_property write_incremental_synth_checkpoint true [get_runs synth_1]
 set_property AUTO_INCREMENTAL_CHECKPOINT 1 [get_runs synth_1]
 #Setting Implementation options
